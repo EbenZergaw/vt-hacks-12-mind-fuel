@@ -2,6 +2,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/app/components/ui/c
 import { FileText, Video, Headphones, Image, MessageSquare, Eye } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
+import LinkPreview from "./ui/link-preview";
 
 type MediaType = "article" | "video" | "podcast" | "image" | "post";
 
@@ -78,12 +79,13 @@ export default function LinkDisplay({ linkData }: LinkDisplayProps) {
           >
             Posted by {linkData.userID}
           </Link>
-          <div
-            className="rounded cursor-pointer"
-            onClick={() => window.open(linkData.url, "_blank")}
+          <LinkPreview
+            url={linkData.url}
+            className="flex items-center text-smrounded cursor-pointer text-pink-500 opacity-40 hover:opacity-100"
           >
-            <Eye className="h-6 w-6 text-pink-500" />
-          </div>
+            View
+            <Eye className="h-6 w-6 ml-2 text-pink-500" />
+          </LinkPreview>
         </div>
       </CardFooter>
     </Card>

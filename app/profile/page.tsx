@@ -58,7 +58,13 @@ const placeholderUser: UserData = {
   collections: ["Tech", "Design", "Philosophy", "Combat Sports"],
 };
 
-const links = ["id123", "id124", "id125"];
+const links = ["id123", "id124", "id125", "123"];
+
+// Write a function that generates a random collection string according to whats in placeholderUser.collections
+const generateRandomCollection = (): string => {
+  const randomIndex = Math.floor(Math.random() * placeholderUser.collections.length);
+  return placeholderUser.collections[randomIndex];
+};
 
 const fetchLinkData = async (linkID: string): Promise<LinkData> => {
   // Simulate fetching data with a correct mediaType
@@ -73,7 +79,7 @@ const fetchLinkData = async (linkID: string): Promise<LinkData> => {
         description: "This is a sample description for the article.",
         // Ensure mediaType is one of the valid values
         mediaType: "video", // Explicitly use a value from MediaType
-        collection: "Tech",
+        collection: generateRandomCollection(),
         tags: ["technology", "web", "react"],
       });
     }, 1000);
@@ -131,12 +137,12 @@ function Profile() {
         {/* Main Content Section */}
         <div className="flex w-full h-full">
           {/* Filter Panel */}
-          <div className="w-1/6 p-4 h-screen">
+          {/* <div className="w-1/6 p-4 h-screen"> */}
             {/* <FilterPanel /> */}
-          </div>
+          {/* </div> */}
 
           {/* Curated Content Cards */}
-          <div className="w-3/4 p-4 overflow-auto">
+          <div className="w- 3 /4 w-full p-4 overflow-auto">
             {/* Filter Buttons */}
             <div className="flex justify-evenly mb-3">
               <div className="mb-2 text-lg">
@@ -145,7 +151,7 @@ function Profile() {
             </div>
 
             {/* Filtered Links */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredLinks.map((link) => (
                 <LinkDisplay key={link.linkID} linkData={link} />
               ))}
