@@ -7,6 +7,7 @@ import { useUser } from '@clerk/nextjs';
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { SignOutButton } from "@clerk/nextjs";
+import EditProfileModal from "./EditProfileModal";
 
 interface UserData {
   userID: string;
@@ -95,7 +96,7 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
             {(userID === user?.id && displayType === "dashboard") && (
                 <div className="flex flex-col space-y-4">
                 
-                    <Button variant="outline">Edit Profile</Button>
+                    <EditProfileModal></EditProfileModal>
 
                     <div className="text-white float-right text-right">
                         <SignOutButton />

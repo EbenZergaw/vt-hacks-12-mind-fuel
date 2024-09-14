@@ -3,8 +3,9 @@ import { useAuth } from "@clerk/nextjs";
 import { Search, User } from "lucide-react";
 import Link from "next/link";
 
-import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
+import { Button } from "@/app/components/ui/moving-border";
+import PostLinkModal from "./PostLinkModal";
 
 export default function Navbar() {
   const { isLoaded, userId, sessionId, getToken } = useAuth();
@@ -17,7 +18,12 @@ export default function Navbar() {
             Logo
           </a>
         </div>
-        <Button variant="outline">Click Me</Button>
+        {
+            userId ? (
+
+                <PostLinkModal />
+            ) : null
+        }
       </div>
       <div className="flex-1 max-w-md mx-4">
         <div className="relative">
