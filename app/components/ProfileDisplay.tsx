@@ -1,11 +1,11 @@
 'use client'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
+import { Button } from "@/app/components/ui/button";
 import { useState, useEffect } from "react";
 import { Twitter, Github, Globe } from "lucide-react";
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 interface UserData {
   userID: string;
@@ -79,7 +79,7 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
   if (!userData) return null;
 
   return (
-    <div className={`max-w-2xl mx-auto p-4 ${(userID !== user?.id && displayType === "display") ? 'rounded-lg border border-gray-500' : ''}`}>
+    <div className={`max-w- 2xl mx-auto p-4 ${(userID !== user?.id && displayType === "display") ? 'rounded-lg border border-gray-500' : 'w-full'}`}>
       <div className="flex items-start space-x-4">
         <Avatar className="w-32 h-32">
           <AvatarImage src={userData.avatarUrl} alt={userData.username} />
@@ -102,7 +102,7 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
             {userData.socials.map((social) => {
               const colors: { [key: string]: string } = {
                 Twitter: "text-blue-500",
-                GitHub: "text-gray-200",
+                GitHub: "text-gray-600",
                 Website: "text-green-500",
               };
               return (
@@ -113,7 +113,7 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
                   rel="noopener noreferrer"
                   className={`flex items-center text-white hover:underline ${colors[social.name] || ""}`}
                 >
-                  <social.icon className="inline mr-1" size={16} />
+                  <social.icon className={`inline mr-1 ${colors[social.name] || ""}`} size={20} />
                   {social.name}
                 </a>
               );
