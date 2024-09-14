@@ -5,6 +5,7 @@ import { Github, Twitter, Globe } from "lucide-react";
 import ProfileDisplay from "../components/ProfileDisplay";
 import LinkDisplay from "../components/LinkDisplay";
 import { useUser } from "@clerk/nextjs";
+import SquigglyUnderline from "../components/SquigglyUnderline";
 
 // Define valid media types as a union type
 type MediaType = "article" | "video" | "podcast" | "image" | "post";
@@ -138,28 +139,9 @@ function Profile() {
           <div className="w-3/4 p-4 overflow-auto">
             {/* Filter Buttons */}
             <div className="flex justify-evenly mb-3">
-              <span
-                className="text-white text-lg font-bold"
-                onClick={() => {
-                  setFilterOptions({ ...filterOptions, collection: "All" });
-                }}
-              >
-                All
-              </span>
-              {placeholderUser.collections.map((collection) => (
-                <span
-                  key={collection}
-                  className="text-white text-lg font-bold"
-                  onClick={() =>
-                    setFilterOptions({
-                      ...filterOptions,
-                      collection: collection,
-                    })
-                  }
-                >
-                  {collection}
-                </span>
-              ))}
+              <div className="mb-2 text-lg">
+                <SquigglyUnderline collections={placeholderUser.collections} filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
+              </div>
             </div>
 
             {/* Filtered Links */}
