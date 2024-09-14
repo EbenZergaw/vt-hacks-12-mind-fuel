@@ -66,7 +66,7 @@ export function LandingPage() {
       </ContainerScroll>
     </div>
 
-        <h1 className="text-6xl bg-gradient-to-r from-violet-600 to-blue-400 bg-clip-text text-transparent w-fit mx-auto">
+        <h1 className="text-6xl font-bold bg-gradient-to-r from-violet-600 to-blue-400 bg-clip-text text-transparent w-fit mx-auto">
           Built for the Curious
         </h1>
       
@@ -94,14 +94,14 @@ export function LandingPage() {
           >
             <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-purple-500  bg-red-500 rounded-full blur-3xl z-50" />
             <div className="relative shadow-xl px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col justify-end items-start">
-              <Sparkles className="mx-auto w-6 h-6 text-white mb-4 relative top-0"></Sparkles>
+              <Sparkles className="mx-auto w-6 h-6 text-white mb-4 relative top-0 z-50"></Sparkles>
 
               <h1 className="font-bold text-xl text-white mb-4 relative z-50 w-fit mx-auto">
                 What are you waiting for?
               </h1>
 
               <p className="text-slate-900 text-base font-bold mb-4 relative z-50 text-center">
-                Signup and level up your knowledge.
+                Sign up and level up your knowledg
               </p>
 
               {/* Meaty part - Meteor effect */}
