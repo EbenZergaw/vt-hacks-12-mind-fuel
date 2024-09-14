@@ -29,7 +29,7 @@ function PostLinkModal() {
   const [descCharCount, setDescCharCount] = useState(0);
   const [tags, setTags] = useState([]);
 
-  const handleDescriptionChange = (e) => {
+  const handleDescriptionChange = (e : any) => {
     const descText = e.target.value;
     if (descText.length <= 150) {
       setDescription(descText);
@@ -37,7 +37,7 @@ function PostLinkModal() {
     }
   };
 
-  const handleTagsChange = (e) => {
+  const handleTagsChange = (e : any) => {
     const newTags = e.target.value.split(",").slice(0, 3);
     setTags(newTags);
   };

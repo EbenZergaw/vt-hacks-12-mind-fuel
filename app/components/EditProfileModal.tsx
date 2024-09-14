@@ -17,7 +17,7 @@ function EditProfile() {
   const [bio, setBio] = useState("");
   const [charCount, setCharCount] = useState(0);
 
-  const handleBioChange = (e) => {
+  const handleBioChange = (e:any) => {
     const bioText = e.target.value;
     if (bioText.length <= 250) {
       setBio(bioText);
