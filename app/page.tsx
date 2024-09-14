@@ -13,12 +13,13 @@ import { BookMarked, Brain, Sparkles } from "lucide-react";
 import { Compare } from "./components/ui/compare";
 import { ContainerScroll } from "./components/ui/container-scroll-animation";
 import Image from "next/image";
+import brainrot from './assets/brainrot.png'
 
 
 export function LandingPage() {
   return (
     <div className="pb-60">
-      <div className="flex items-center">
+      <div className="flex items-center w-fit mx-auto justify-end">
         <Globe></Globe>
         <div className="flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center">
@@ -31,7 +32,7 @@ export function LandingPage() {
                 Learn from other people and turn your second brain into an
                 archive of value
               </p>
-              <BorderButton>
+              <BorderButton className="bg-gradient-to-br from-violet-600 to-blue-500">
                 <Link href="/sign-up">
                   Register
                 </Link>
@@ -46,17 +47,17 @@ export function LandingPage() {
         titleComponent={
           <>
             <h1 className="text-4xl font-semibold text-white dark:text-white">
-              Replace brainrot with <br />
+              Replace brain rot with <br />
               <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none bg-gradient-to-r from-violet-600 to-blue-400 bg-clip-text text-transparent">
-                brain fuel 
+                mind fuel 
               </span>
             </h1>
           </>
         }
       >
         <Compare
-            firstImage="https://assets.aceternity.com/code-problem.png"
-            secondImage="https://assets.aceternity.com/code-solution.png"
+            firstImage="https://assets.aceternity.com/code-solution.png"
+            secondImage={brainrot.src}
             firstImageClassName="object-cover object-left-top"
             secondImageClassname="object-cover object-left-top"
             className="w-full h-full"

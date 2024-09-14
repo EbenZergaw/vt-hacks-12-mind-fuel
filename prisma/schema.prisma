@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id          Int       @id @default(autoincrement()) // userID
+  username    String
+  avatar      String?   // Optional avatar field
+  bio         String?
+  socials     Json      // Array of social links
+  links       Link[]    @relation("ProfileLinks") // One-to-many relationship with Link
+  collections  String[]
+  
+  @@index([id], name: "ProfileIDIndex")
+}
+
+model Link {
+  id          Int       @id @default(autoincrement()) // linkID
+  userID      Int       // Foreign key to Profile (userID)
+  profile     Profile   @relation("ProfileLinks", fields: [userID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  url         String
+  date        DateTime  @default(now())
+  title       String
+  description String?
+  mediaType   MediaType // Enum for media type
+  collection  String?
+  tags        String[]  // Array of tags
+
+  @@index([id], name: "LinkIDIndex")
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  ARTICLE
+  PODCAST
+  OTHER
+}
+

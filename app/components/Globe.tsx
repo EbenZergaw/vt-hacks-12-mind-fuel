@@ -10,25 +10,25 @@ const World = dynamic(() => import("./ui/globe").then((m) => m.World), {
 export function Globe() {
   const globeConfig = {
     pointSize: 4,
-    globeColor: "#6F6F6F",
+    globeColor: "#4D5999",
     showAtmosphere: true,
-    atmosphereColor: "#FFFFFF",
-    atmosphereAltitude: 0.1,
+    atmosphereColor: "#A0D1FF",
+    atmosphereAltitude: 0.2,
     emissive: "#062056",
     emissiveIntensity: 0.1,
-    shininess: 0.9,
-    polygonColor: "rgba(255,255,255,0.7)",
-    ambientLight: "#38bdf8",
+    shininess: 3,
+    polygonColor: "#FFFFFF",
+    ambientLight: "#50A9FB",
     directionalLeftLight: "#ffffff",
     directionalTopLight: "#ffffff",
     pointLight: "#ffffff",
     arcTime: 1000,
     arcLength: 0.9,
     rings: 1,
-    maxRings: 3,
+    maxRings: 6,
     initialPosition: { lat: 22.3193, lng: 114.1694 },
     autoRotate: true,
-    autoRotateSpeed: 0.5,
+    autoRotateSpeed: 9.5,
   };
   const colors = ["#06b6d4", "#3b82f6", "#6366f1"];
   const sampleArcs = [

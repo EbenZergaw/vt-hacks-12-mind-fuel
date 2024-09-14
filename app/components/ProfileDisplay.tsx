@@ -23,7 +23,7 @@ interface UserData {
 
 interface ProfileDisplayProps {
   userID: string;
-  displayType: "display" | "dashboard";
+  displayType: "display" | "dashboard" | "thumbnail";
 }
 
 const placeholderUser: UserData = {
@@ -81,7 +81,7 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
   if (!userData) return null;
 
   return (
-    <div className={`max-w- 2xl mx-auto p-4 ${(userID !== user?.id && displayType === "display") ? 'rounded-lg border border-gray-500' : 'w-full'}`}>
+    <div className={`max-w- 2xl mx-auto p-4 ${(userID !== user?.id && displayType === "thumbnail") ? 'rounded-lg border border-gray-500' : 'w-full'}`}>
       <div className="flex items-start space-x-4">
         <Avatar className="w-32 h-32">
           <AvatarImage src={userData.avatarUrl} alt={userData.username} />
@@ -103,8 +103,13 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
                     </div>
                 </div>
             )}
-            {(userID !== user?.id && displayType === "display") && (
+            {(userID !== user?.id && displayType === "thumbnail") && (
               <a className="text-white hover:underline" href={`/profile/${userID}`}>View</a>
+            )}
+            {(userID !== user?.id && displayType === "display") && (
+              // <a className="text-white hover:underline" href={`/profile/${userID}`}>View</a>
+              // THIS WOULD BE WHERE SOCIAL INTERACTIONS WOULD BE
+              ''
             )}
           </div>
           <div className="flex space-x-4 mb-4">
