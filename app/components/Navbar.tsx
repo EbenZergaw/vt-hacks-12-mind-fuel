@@ -34,7 +34,7 @@ export default function Navbar() {
           // Link to profile page
           <>
             <Link
-              href="/profile"
+              href="/dashboard"
               className="flex items-center space-x-1 text-xl font-medium text-white"
             >
               <User className="h-8 w-8" />

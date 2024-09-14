@@ -6,6 +6,7 @@ import { Twitter, Github, Globe } from "lucide-react";
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/app/components/ui/skeleton";
+import { SignOutButton } from "@clerk/nextjs";
 
 interface UserData {
   userID: string;
@@ -92,7 +93,14 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
             <h1 className="text-2xl font-bold text-white">{userData.username}</h1>
 
             {(userID === user?.id && displayType === "dashboard") && (
-              <Button variant="outline">Edit Profile</Button>
+                <div className="flex flex-col space-y-4">
+                
+                    <Button variant="outline">Edit Profile</Button>
+
+                    <div className="text-white float-right text-right">
+                        <SignOutButton />
+                    </div>
+                </div>
             )}
             {(userID !== user?.id && displayType === "display") && (
               <a className="text-white hover:underline" href={`/profile/${userID}`}>View</a>

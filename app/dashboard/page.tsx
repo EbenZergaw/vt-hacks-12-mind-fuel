@@ -6,11 +6,15 @@ import ProfileDisplay from "../components/ProfileDisplay";
 import LinkDisplay from "../components/LinkDisplay";
 import { useUser } from "@clerk/nextjs";
 import SquigglyUnderline from "../components/SquigglyUnderline";
+import { Button } from "../components/ui/button";
+import { SignOutButton } from "@clerk/nextjs";
+import CreateCollectionModal from "../components/CreateCollectionModal";
 
 // Define valid media types as a union type
 type MediaType = "article" | "video" | "podcast" | "image" | "post";
 
 interface UserData {
+  userID: string;
   username: string;
   avatarUrl: string;
   bio: string;
@@ -35,6 +39,7 @@ interface LinkData {
 }
 
 const placeholderUser: UserData = {
+  userID: "johndoe",
   username: "johndoe",
   avatarUrl: "/placeholder.svg?height=128&width=128",
   bio: "Frontend developer passionate about creating beautiful and functional user interfaces.",
@@ -86,9 +91,10 @@ const fetchLinkData = async (linkID: string): Promise<LinkData> => {
   });
 };
 
-function Profile() {
+function Dashboard() {
   const { isLoaded, isSignedIn, user } = useUser();
   const [linkData, setLinkData] = useState<LinkData[]>([]);
+  const [userData, setUserData] = useState<UserData>(placeholderUser);
   const [filterOptions, setFilterOptions] = useState<{
     tags: string[];
     mediaType: string[];
@@ -144,9 +150,12 @@ function Profile() {
           {/* Curated Content Cards */}
           <div className="w- 3 /4 w-full p-4 overflow-auto">
             {/* Filter Buttons */}
-            <div className="flex justify-evenly mb-3">
-              <div className="mb-2 text-lg">
+            <div className="flex justify-between mb-3">
+              <div className="mb-2 text-lg flex justify-evenly">
                 <SquigglyUnderline collections={placeholderUser.collections} filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
+              </div>
+              <div className="float-right">
+                <CreateCollectionModal />
               </div>
             </div>
 
@@ -165,4 +174,4 @@ function Profile() {
   return null;
 }
 
-export default Profile;
+export default Dashboard;
