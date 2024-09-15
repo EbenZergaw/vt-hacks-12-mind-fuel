@@ -99,7 +99,7 @@ export function LandingPage() {
           </div>
         </div>
 
-        <div className="w-full h-full flex flex-col items-center justify-center relative -bo ttom-[150px]">
+        <div className="w-full h-full flex flex-col items-center justify-center">
           <PinContainer
             className="w-[300px] relative h-[350px] flex flex-col items-center justify-center"
             title="Register"
@@ -107,14 +107,14 @@ export function LandingPage() {
           >
             <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-purple-500  bg-red-500 rounded-full blur-3xl z-50" />
             <div className="relative shadow-xl px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col justify-end items-start">
-              <Sparkles className="mx-auto w-6 h-6 text-white mb-4 relative top-0 z-50"></Sparkles>
+              {/* <Sparkles className="mx-auto w-6 h-6 text-white mb-4 relative top-0 z-50"></Sparkles> */}
 
               <h1 className="font-bold text-xl text-white mb-4 relative z-50 w-fit mx-auto">
                 What are you waiting for?
               </h1>
 
-              <p className="text-slate-900 text-base font-bold mb-4 relative z-50 text-center">
-                Sign up and level up your knowledg
+              <p className="text-white text-base font-bold mb-4 relative z-50 text-center mx-auto">
+                Sign up today
               </p>
 
               {/* Meaty part - Meteor effect */}
