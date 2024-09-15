@@ -32,6 +32,8 @@ function page() {
   }, [isSignedIn, router]);
   return (
     <div className="pb-60">
+      <ShootingStars />
+      <StarsBackground />
       <div className="flex items-center w-[90%] mx-auto justify-between">
         <div className="flex flex-col items-center justify-center">
           <div className="items-center justify-center grid gap-3">
@@ -57,6 +59,7 @@ function page() {
       </div>
 
       <div className="flex flex-col mt-14">
+        
       <ContainerScroll
         titleComponent={
           <>

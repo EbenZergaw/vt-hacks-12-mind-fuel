@@ -11,7 +11,7 @@ export default function Navbar() {
   const { isLoaded, userId, sessionId, getToken } = useAuth();
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-background border-b border-gray-700">
+    <nav className="flex items-center justify-between p-4 bg-background border-b border-gray-700 bg-black">
       <div className="mx-auto w-[80%] flex items-center justify-between">
         {/* LOGO */}
         <Link href="/" className="w-10 h-10 rounded-full flex items-center justify-center text-white">
