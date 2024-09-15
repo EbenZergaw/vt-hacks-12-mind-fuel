@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 
 
 
-export function LandingPage() {
+function page() {
   const { isSignedIn } = useAuth();
   const router = useRouter();
 
@@ -143,4 +143,4 @@ export function LandingPage() {
   );
 }
 
-export default LandingPage;
+export default page;
