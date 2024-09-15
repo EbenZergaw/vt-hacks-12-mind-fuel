@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Profile {
-  id          Int       @id @default(autoincrement()) // userID
+  id          String       @id @unique // userID
   username    String
   avatar      String?   // Optional avatar field
   bio         String?
@@ -22,7 +22,7 @@ model Profile {
 
 model Link {
   id          Int       @id @default(autoincrement()) // linkID
-  userID      Int       // Foreign key to Profile (userID)
+  userID      String       // Foreign key to Profile (userID)
   profile     Profile   @relation("ProfileLinks", fields: [userID], references: [id], onDelete: Cascade, onUpdate: Cascade)
   url         String
   date        DateTime  @default(now())

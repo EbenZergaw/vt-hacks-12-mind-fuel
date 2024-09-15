@@ -395,25 +395,34 @@ export function Globe() {
   ];
 
   return (
-      <div className="">
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
+    <div className="">
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 20,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0,
+        }}
+        className="w-[500px] h-[500px]"
+      >
+        <div
+          className="relative z-50"
+          style={{
+            width: "500px",
+            height: "500px",
+            maxWidth: "500px",
+            maxHeight: "500px",
+            // aspectRatio: "1 / 1",
           }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 1,
-          }}
-          className="div"
         >
-          <div className="h-[500px] min-w-[500px] min-h-[500px] w-[500px] z-10">
-            <World data={sampleArcs} globeConfig={globeConfig} />
-          </div>
-        </motion.div>
-      </div>
+          <World data={sampleArcs} globeConfig={globeConfig} />
+        </div>
+      </motion.div>
+    </div>
   );
 }

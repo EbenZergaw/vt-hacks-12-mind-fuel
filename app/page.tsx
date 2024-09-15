@@ -8,15 +8,27 @@ import { Meteors } from "./components/ui/meteors";
 import { loadSlim } from "@tsparticles/slim";
 import Link from "next/link";
 import { Button as BorderButton } from "./components/ui/moving-border";
+import { Button } from "./components/ui/button";
 import { PinContainer } from "./components/ui/3d-pin";
 import { BookMarked, Brain, Sparkles } from "lucide-react";
 import { Compare } from "./components/ui/compare";
 import { ContainerScroll } from "./components/ui/container-scroll-animation";
 import Image from "next/image";
 import brainrot from './assets/brainrot.png'
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+
 
 
 export function LandingPage() {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push('/dashboard');
+    }
+  }, [isSignedIn, router]);
   return (
     <div className="pb-60">
       <div className="flex items-center w-fit mx-auto justify-end">
@@ -32,11 +44,11 @@ export function LandingPage() {
                 Learn from other people and turn your second brain into an
                 archive of value
               </p>
-              <BorderButton className="bg-gradient-to-br from-violet-600 to-blue-500">
+              <Button className="bg-gradient-to-br rounded-xl px-6 from-violet-600 to-blue-500 hover:shadow-blue-300 hover:shadow-2xl fade">
                 <Link href="/sign-up">
                   Register
                 </Link>
-              </BorderButton>
+              </Button>
             </div>
           </div>
         </div>
@@ -86,7 +98,7 @@ export function LandingPage() {
           </div>
         </div>
 
-        <div className="w-full h-full flex flex-col items-center justify-center relative -bottom-[150px]">
+        <div className="w-full h-full flex flex-col items-center justify-center relative -bo ttom-[150px]">
           <PinContainer
             className="w-[300px] relative h-[350px] flex flex-col items-center justify-center"
             title="Register"

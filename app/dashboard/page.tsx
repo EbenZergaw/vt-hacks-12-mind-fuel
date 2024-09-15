@@ -9,6 +9,8 @@ import SquigglyUnderline from "../components/SquigglyUnderline";
 import { Button } from "../components/ui/button";
 import { SignOutButton } from "@clerk/nextjs";
 import CreateCollectionModal from "../components/CreateCollectionModal";
+import { UserProfile } from "@clerk/nextjs";
+import PostLinkModal from "../components/PostLinkModal";
 
 // Define valid media types as a union type
 type MediaType = "article" | "video" | "podcast" | "image" | "post";
@@ -38,63 +40,43 @@ interface LinkData {
   tags: string[];
 }
 
-const placeholderUser: UserData = {
-  userID: "johndoe",
-  username: "johndoe",
-  avatarUrl: "/placeholder.svg?height=128&width=128",
-  bio: "Frontend developer passionate about creating beautiful and functional user interfaces.",
-  socials: [
-    {
-      name: "Twitter",
-      url: "https://twitter.com/johndoe",
-      icon: Twitter,
-    },
-    {
-      name: "GitHub",
-      url: "https://github.com/johndoe",
-      icon: Github,
-    },
-    {
-      name: "Website",
-      url: "https://johndoe.com",
-      icon: Globe,
-    },
-  ],
-  collections: ["Tech", "Design", "Philosophy", "Combat Sports"],
+// Helper function to strip "user_" prefix from Clerk user ID
+const getDatabaseUserID = (clerkUserID: string) => {
+  return clerkUserID.replace("user_", "");
 };
 
-const links = ["id123", "id124", "id125", "123"];
-
-// Write a function that generates a random collection string according to whats in placeholderUser.collections
-const generateRandomCollection = (): string => {
-  const randomIndex = Math.floor(Math.random() * placeholderUser.collections.length);
-  return placeholderUser.collections[randomIndex];
+const fetchUserData = async (userID: string): Promise<UserData> => {
+  try {
+    const res = await fetch(`/api/profile/${userID}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+    const userData = await res.json();
+    return userData;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
 };
 
-const fetchLinkData = async (linkID: string): Promise<LinkData> => {
-  // Simulate fetching data with a correct mediaType
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        linkID,
-        userID: "user123",
-        url: "https://www.dimension.dev/",
-        date: new Date(),
-        title: "Sample Article Title",
-        description: "This is a sample description for the article.",
-        // Ensure mediaType is one of the valid values
-        mediaType: "video", // Explicitly use a value from MediaType
-        collection: generateRandomCollection(),
-        tags: ["technology", "web", "react"],
-      });
-    }, 1000);
-  });
+const fetchLinksForUser = async (userID: string): Promise<LinkData[]> => {
+  try {
+    const res = await fetch(`/api/link?userID=${userID}`); // Adjust if your API has query params for userID
+    if (!res.ok) {
+      throw new Error("Failed to fetch link data");
+    }
+    const links = await res.json();
+    return links;
+  } catch (error) {
+    console.error("Error fetching links:", error);
+    throw error;
+  }
 };
 
 function Dashboard() {
   const { isLoaded, isSignedIn, user } = useUser();
   const [linkData, setLinkData] = useState<LinkData[]>([]);
-  const [userData, setUserData] = useState<UserData>(placeholderUser);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [filterOptions, setFilterOptions] = useState<{
     tags: string[];
     mediaType: string[];
@@ -105,21 +87,34 @@ function Dashboard() {
     collection: 'All',
   });
 
-  // Fetch all link data on mount
+  // Fetch user and link data on mount if signed in
   useEffect(() => {
-    const fetchData = async () => {
-      const allLinkData = await Promise.all(links.map(fetchLinkData));
-      setLinkData(allLinkData);
-    };
-    fetchData();
-  }, []);
+    if (isLoaded && isSignedIn && user) {
+      const fetchData = async () => {
+        try {
+          const databaseUserID = getDatabaseUserID(user.id); // Strip "user_" prefix
+
+          // Fetch User Data
+          const fetchedUserData = await fetchUserData(databaseUserID);
+          setUserData(fetchedUserData);
+
+          // Fetch Link Data
+          const fetchedLinks = await fetchLinksForUser(databaseUserID);
+          setLinkData(fetchedLinks);
+        } catch (error) {
+          console.error("Error loading dashboard data:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [isLoaded, isSignedIn, user]);
 
   // Apply filtering logic based on filterOptions
   const filteredLinks = linkData.filter((link) => {
     const matchesCollection =
       filterOptions.collection.length === 0 ||
-      filterOptions.collection.includes(link.collection) ||
-      filterOptions.collection == ("All");
+      filterOptions.collection === "All" ||
+      filterOptions.collection.includes(link.collection);
 
     const matchesTags =
       filterOptions.tags.length === 0 ||
@@ -132,27 +127,24 @@ function Dashboard() {
     return matchesCollection && matchesTags && matchesMediaType;
   });
 
-  if (isLoaded && isSignedIn) {
+  if (isLoaded && isSignedIn && userData) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col w-full">
         {/* Profile Section */}
         <div id="profile-section" className="bg-black p-4">
           <ProfileDisplay userID={user.id} displayType="dashboard" />
         </div>
-
+        
         {/* Main Content Section */}
-        <div className="flex w-full h-full">
-          {/* Filter Panel */}
-          {/* <div className="w-1/6 p-4 h-screen"> */}
-            {/* <FilterPanel /> */}
-          {/* </div> */}
-
+        <div className="w-[90%] mx-auto h-full">
           {/* Curated Content Cards */}
-          <div className="w- 3 /4 w-full p-4 overflow-auto">
+          <div className="w-80% mx-auto p-4 overflow-auto">
             {/* Filter Buttons */}
             <div className="flex justify-between mb-3">
-              <div className="mb-2 text-lg flex justify-evenly">
-                <SquigglyUnderline collections={placeholderUser.collections} filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
+              <div className="mb-2 text-lg flex items-stretch">
+                {
+                  <SquigglyUnderline collections={userData.collections} filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
+                }
               </div>
               <div className="float-right">
                 <CreateCollectionModal />
@@ -165,6 +157,19 @@ function Dashboard() {
                 <LinkDisplay key={link.linkID} linkData={link} />
               ))}
             </div>
+            {
+                filteredLinks.length === 0 && (
+                  <div className="w-full">
+                    <div className="mx-auto w-fit text-center text-white">
+                      No links found :/
+                      <br />
+                          
+                      <br />
+                      <PostLinkModal></PostLinkModal>
+                    </div>
+                  </div>
+                )
+              }
           </div>
         </div>
       </div>
