@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ProfileDisplay from "../components/ProfileDisplay";
+import ProfileDisplay from "../../components/ProfileDisplay";
 
 interface UserData {
   userID: string;
@@ -10,40 +10,50 @@ interface UserData {
   bio: string;
 }
 
-const dummyUsers: UserData[] = [
-  {
-    userID: "user1",
-    username: "johndoe",
-    avatarUrl: "/avatar1.png",
-    bio: "Frontend developer passionate about UI/UX design.",
-  },
-  {
-    userID: "user2",
-    username: "janedoe",
-    avatarUrl: "/avatar2.png",
-    bio: "Fullstack developer and open-source contributor.",
-  },
-  {
-    userID: "user3",
-    username: "charlie",
-    avatarUrl: "/avatar3.png",
-    bio: "Machine learning enthusiast and Python expert.",
-  },
-  {
-    userID: "user4",
-    username: "alice",
-    avatarUrl: "/avatar4.png",
-    bio: "Blockchain developer focused on decentralized apps.",
-  },
-];
-
 const ProfilePage = () => {
   const [users, setUsers] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch users (for now, use hardcoded dummy data)
+  // Fetch users from the API
   useEffect(() => {
-    setUsers(dummyUsers);
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/profiles");
+
+        if (!response.ok) {
+            console.log(response.statusText)
+          throw new Error("Failed to fetch user profiles");
+        }
+
+        const data = await response.json();
+        // Map data to the structure used in UserData
+        const formattedUsers = data.map((user: any) => ({
+          userID: user.id,
+          username: user.username,
+          avatarUrl: user.avatar || "/default-avatar.png", // Fallback to default avatar
+          bio: user.bio || "No bio available",
+        }));
+
+        setUsers(formattedUsers);
+        setLoading(false);
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
+
+  if (loading) {
+    return <div className="text-white">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="min-h-screen p-6">
@@ -53,7 +63,7 @@ const ProfilePage = () => {
           <ProfileDisplay
             key={user.userID}
             userID={user.userID}
-            displayType="thumbnail"  // Set display type to "thumbnail"
+            displayType="thumbnail" // Set display type to "thumbnail"
           />
         ))}
       </div>

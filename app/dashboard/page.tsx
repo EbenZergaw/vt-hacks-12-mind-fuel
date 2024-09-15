@@ -2,18 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { Github, Twitter, Globe } from "lucide-react";
-import ProfileDisplay from "../components/ProfileDisplay";
-import LinkDisplay from "../components/LinkDisplay";
+import ProfileDisplay from "../../components/ProfileDisplay";
+import LinkDisplay from "../../components/LinkDisplay";
 import { useUser } from "@clerk/nextjs";
-import SquigglyUnderline from "../components/SquigglyUnderline";
-import { Button } from "../components/ui/button";
+import SquigglyUnderline from "../../components/SquigglyUnderline";
+import { Button } from "../../components/ui/button";
 import { SignOutButton } from "@clerk/nextjs";
-import CreateCollectionModal from "../components/CreateCollectionModal";
+import CreateCollectionModal from "../../components/CreateCollectionModal";
 import { UserProfile } from "@clerk/nextjs";
-import PostLinkModal from "../components/PostLinkModal";
+import PostLinkModal from "../../components/PostLinkModal";
 
 // Define valid media types as a union type
-type MediaType = "article" | "video" | "podcast" | "image" | "post";
+// make these match the prisma schema capitals
+
+type MediaType = "ARTICLE" | "VIDEO" | "PODCAST" | "IMAGE" | "WEBSITE" | "OTHER";
 
 interface UserData {
   userID: string;
@@ -61,7 +63,7 @@ const fetchUserData = async (userID: string): Promise<UserData> => {
 
 const fetchLinksForUser = async (userID: string): Promise<LinkData[]> => {
   try {
-    const res = await fetch(`/api/link?userID=${userID}`); // Adjust if your API has query params for userID
+    const res = await fetch(`/api/link/${userID}`); // Pass userID as part of the path
     if (!res.ok) {
       throw new Error("Failed to fetch link data");
     }
@@ -72,6 +74,7 @@ const fetchLinksForUser = async (userID: string): Promise<LinkData[]> => {
     throw error;
   }
 };
+
 
 function Dashboard() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -109,24 +112,28 @@ function Dashboard() {
     }
   }, [isLoaded, isSignedIn, user]);
 
-  // Apply filtering logic based on filterOptions
   const filteredLinks = linkData.filter((link) => {
+    // Collection filtering
     const matchesCollection =
-      filterOptions.collection.length === 0 ||
-      filterOptions.collection === "All" ||
-      filterOptions.collection.includes(link.collection);
-
+      filterOptions.collection === "All" || // Show all if "All" is selected
+      filterOptions.collection.length === 0 || // Show all if no collection is selected
+      (link.collection === filterOptions.collection && link.collection !== null && link.collection !== ""); // Exact match for collection and it's not null/empty
+  
+    // Tags filtering (ensure at least one tag matches if tags are selected)
     const matchesTags =
-      filterOptions.tags.length === 0 ||
-      filterOptions.tags.some((tag) => link.tags.includes(tag));
-
+      filterOptions.tags.length === 0 || // Show all if no tags are selected
+      filterOptions.tags.every((selectedTag) =>
+        link.tags.includes(selectedTag)
+      ); // Ensure each selected tag is in the link's tags
+  
+    // Media type filtering
     const matchesMediaType =
-      filterOptions.mediaType.length === 0 ||
-      filterOptions.mediaType.includes(link.mediaType);
-
+      filterOptions.mediaType.length === 0 || // Show all if no media type is selected
+      filterOptions.mediaType.includes(link.mediaType); // Check for a match with the selected media types
+  
     return matchesCollection && matchesTags && matchesMediaType;
   });
-
+  
   if (isLoaded && isSignedIn && userData) {
     return (
       <div className="min-h-screen flex flex-col w-full">
@@ -150,12 +157,13 @@ function Dashboard() {
                 <CreateCollectionModal />
               </div>
             </div>
+            
 
             {/* Filtered Links */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredLinks.map((link) => (
-                <LinkDisplay key={link.linkID} linkData={link} />
-              ))}
+              {filteredLinks.map((link) => {
+                return <LinkDisplay key={link.linkID} linkData={link} />;
+              })} 
             </div>
             {
                 filteredLinks.length === 0 && (

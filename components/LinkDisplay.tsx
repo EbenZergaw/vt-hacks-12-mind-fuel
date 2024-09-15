@@ -1,10 +1,11 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/app/components/ui/card";
-import { FileText, Video, Headphones, Image, MessageSquare, Eye } from "lucide-react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { FileText, Video, Headphones, Image, Globe, HelpCircle, Eye } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
-import LinkPreview from "./ui/link-preview";
+import LinkPreview from "./ui/link-preview"; // Ensure this path is correct
 
-type MediaType = "article" | "video" | "podcast" | "image" | "post";
+// Update MediaType to match the Prisma schema
+type MediaType = "IMAGE" | "VIDEO" | "ARTICLE" | "PODCAST" | "WEBSITE" | "OTHER";
 
 interface LinkData {
   linkID: string;
@@ -19,11 +20,12 @@ interface LinkData {
 }
 
 const mediaTypeIcons: Record<MediaType, React.ElementType> = {
-  article: FileText,
-  video: Video,
-  podcast: Headphones,
-  image: Image,
-  post: MessageSquare,
+  IMAGE: Image,
+  VIDEO: Video,
+  ARTICLE: FileText,
+  PODCAST: Headphones,
+  WEBSITE: Globe,
+  OTHER: HelpCircle,
 };
 
 interface LinkDisplayProps {
@@ -41,12 +43,11 @@ export default function LinkDisplay({ linkData }: LinkDisplayProps) {
             <MediaTypeIcon className="h-6 w-6 text-gray-400" />
           </div>
           <span className="text-gray-400 text-sm sm:text-base">
-            {linkData.mediaType.charAt(0).toUpperCase() +
-              linkData.mediaType.slice(1)}
+            {linkData.mediaType.charAt(0).toUpperCase() + linkData.mediaType.slice(1).toLowerCase()}
           </span>
         </div>
         <span className="text-gray-400 text-sm sm:text-base">
-          {format(linkData.date, "MM/dd/yyyy")}
+          {format(new Date(linkData.date), "MM/dd/yyyy")}
         </span>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -77,7 +78,7 @@ export default function LinkDisplay({ linkData }: LinkDisplayProps) {
             className="text-gray-400 text-xs sm:text-sm md:text-base hover:text-purple-600"
             href={`/profile/${linkData.userID}`}
           >
-            Posted by {linkData.userID}
+            {/* Posted by {linkData.profile.username} */}
           </Link>
           <LinkPreview
             url={linkData.url}

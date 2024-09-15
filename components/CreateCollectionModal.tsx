@@ -18,6 +18,8 @@ function CreateCollectionModal() {
   const [collectionName, setCollectionName] = useState(''); // State to store the new collection name
   const [loading, setLoading] = useState(false); // State to manage loading state
   const [error, setError] = useState<string | null>(null); // State to manage error messages
+  const [success, setSuccess] = useState<string | null>(null); // State to manage success messages
+  const [isOpen, setIsOpen] = useState(false); // State to manage modal open state
 
   // Function to handle form submission
   const handleSaveChanges = async () => {
@@ -28,6 +30,7 @@ function CreateCollectionModal() {
 
     setLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       // Ensure user is not null before accessing its properties
@@ -57,7 +60,14 @@ function CreateCollectionModal() {
 
       // Reset the input field after successful submission
       setCollectionName('');
-      alert('Collection created successfully!'); // Show success message or handle UI changes
+      setSuccess('Collection created successfully!');
+      
+      // Close the modal and refresh the page after a short delay
+      setTimeout(() => {
+        setIsOpen(false);
+        // Refresh the page
+        window.location.reload();
+      }, 1500);
 
     } catch (error: any) {
       setError(error.message || 'Something went wrong.');
@@ -66,10 +76,19 @@ function CreateCollectionModal() {
     }
   };
 
+  const resetModal = () => {
+    setCollectionName('');
+    setError(null);
+    setSuccess(null);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      setIsOpen(open);
+      if (!open) resetModal();
+    }}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create New Collection</Button>
+        <Button variant="outline" onClick={() => setIsOpen(true)}>Create New Collection</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px] bg-black border-gray-500">
@@ -80,33 +99,43 @@ function CreateCollectionModal() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
-          <div>
-            <Label htmlFor="name" className="text-right text-white">
-              Collection Name
-            </Label>
-            <br />
-            <Input
-              id="name"
-              value={collectionName}
-              onChange={(e) => setCollectionName(e.target.value)} // Update state when the input changes
-              placeholder="New collection"
-              className="col-span-3 text-gray-400 border-gray-500"
-            />
-            {error && <p className="text-red-500">{error}</p>} {/* Show error message if exists */}
-          </div>
-        </div>
+        {!success && !error && (
+          <>
+            <div className="grid gap-4 py-4">
+              <div>
+                <Label htmlFor="name" className="text-right text-white">
+                  Collection Name
+                </Label>
+                <br />
+                <Input
+                  id="name"
+                  value={collectionName}
+                  onChange={(e) => setCollectionName(e.target.value)} // Update state when the input changes
+                  placeholder="New collection"
+                  className="col-span-3 text-gray-400 border-gray-500"
+                />
+              </div>
+            </div>
 
-        <DialogFooter>
-          <Button
-            className="bg-white text-black hover:bg-purple-500 fade"
-            variant="default"
-            onClick={handleSaveChanges}
-            disabled={loading} // Disable button while saving
-          >
-            {loading ? 'Saving...' : 'Save changes'}
-          </Button>
-        </DialogFooter>
+            <DialogFooter>
+              <Button
+                className="bg-white text-black hover:bg-purple-500 fade"
+                variant="default"
+                onClick={handleSaveChanges}
+                disabled={loading} // Disable button while saving
+              >
+                {loading ? 'Saving...' : 'Save changes'}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
+
+        {(success || error) && (
+          <div className="py-4 text-center">
+            {success && <p className="text-green-500">{success}</p>}
+            {error && <p className="text-red-500">{error}</p>}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

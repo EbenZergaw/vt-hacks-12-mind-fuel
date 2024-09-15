@@ -2,19 +2,21 @@ import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);
+  const userID = params.id;  // UserID is a string, not a number
 
   try {
-    const link = await prisma.link.findUnique({
-      where: { id },
+    // Fetch all links associated with the user's ID
+    const links = await prisma.link.findMany({
+      where: { userID },
     });
 
-    if (link) {
-      return NextResponse.json(link, { status: 200 });
+    if (links.length > 0) {
+      return NextResponse.json(links, { status: 200 });
     } else {
-      return NextResponse.json({ message: 'Link not found' }, { status: 404 });
+      return NextResponse.json({ message: 'No links found for this user' }, { status: 404 });
     }
   } catch (error) {
-    return NextResponse.json({ error: 'Error fetching link' }, { status: 500 });
+    console.error('Error fetching links:', error);
+    return NextResponse.json({ error: 'Error fetching links' }, { status: 500 });
   }
 }

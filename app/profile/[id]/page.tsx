@@ -2,16 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { Github, Twitter, Globe } from "lucide-react";
-import ProfileDisplay from "../../components/ProfileDisplay";
-import LinkDisplay from "../../components/LinkDisplay";
+import ProfileDisplay from "../../../components/ProfileDisplay";
+import LinkDisplay from "../../../components/LinkDisplay";
 import { useUser } from "@clerk/nextjs";
-import SquigglyUnderline from "../../components/SquigglyUnderline";
+import SquigglyUnderline from "../../../components/SquigglyUnderline";
 import { SignOutButton } from "@clerk/nextjs";
-import CreateCollectionModal from "../../components/CreateCollectionModal";
+import CreateCollectionModal from "../../../components/CreateCollectionModal";
 import { useParams, useRouter } from 'next/navigation';
 
-// Define valid media types as a union type
-type MediaType = "article" | "video" | "podcast" | "image" | "post";
+type MediaType = "ARTICLE" | "VIDEO" | "PODCAST" | "IMAGE" | "WEBSITE" | "OTHER";
 
 interface UserData {
   userID: string;
@@ -83,7 +82,7 @@ const fetchLinkData = async (linkID: string): Promise<LinkData> => {
         title: "Sample Article Title",
         description: "This is a sample description for the article.",
         // Ensure mediaType is one of the valid values
-        mediaType: "video", // Explicitly use a value from MediaType
+        mediaType: "VIDEO", // Explicitly use a value from MediaType
         collection: generateRandomCollection(),
         tags: ["technology", "web", "react"],
       });
