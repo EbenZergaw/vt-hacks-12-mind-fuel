@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Github, Twitter, Globe } from "lucide-react";
 import ProfileDisplay from "../../../components/ProfileDisplay";
 import LinkDisplay from "../../../components/LinkDisplay";
 import { useUser } from "@clerk/nextjs";
 import SquigglyUnderline from "../../../components/SquigglyUnderline";
-import { SignOutButton } from "@clerk/nextjs";
 import CreateCollectionModal from "../../../components/CreateCollectionModal";
 import { useParams, useRouter } from 'next/navigation';
 
@@ -37,66 +35,14 @@ interface LinkData {
   tags: string[];
 }
 
-const placeholderUser: UserData = {
-  userID: "johndoe",
-  username: "johndoe",
-  avatarUrl: "/placeholder.svg?height=128&width=128",
-  bio: "Frontend developer passionate about creating beautiful and functional user interfaces.",
-  socials: [
-    {
-      name: "Twitter",
-      url: "https://twitter.com/johndoe",
-      icon: Twitter,
-    },
-    {
-      name: "GitHub",
-      url: "https://github.com/johndoe",
-      icon: Github,
-    },
-    {
-      name: "Website",
-      url: "https://johndoe.com",
-      icon: Globe,
-    },
-  ],
-  collections: ["Tech", "Design", "Philosophy", "Combat Sports"],
-};
-
-const links = ["id123", "id124", "id125", "123"];
-
-// Write a function that generates a random collection string according to what's in placeholderUser.collections
-const generateRandomCollection = (): string => {
-  const randomIndex = Math.floor(Math.random() * placeholderUser.collections.length);
-  return placeholderUser.collections[randomIndex];
-};
-
-const fetchLinkData = async (linkID: string): Promise<LinkData> => {
-  // Simulate fetching data with a correct mediaType
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        linkID,
-        userID: "user123",
-        url: "https://www.dimension.dev/",
-        date: new Date(),
-        title: "Sample Article Title",
-        description: "This is a sample description for the article.",
-        // Ensure mediaType is one of the valid values
-        mediaType: "VIDEO", // Explicitly use a value from MediaType
-        collection: generateRandomCollection(),
-        tags: ["technology", "web", "react"],
-      });
-    }, 1000);
-  });
-};
-
 function ProfilePage() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const { isLoaded, isSignedIn, user } = useUser(); // Get the current authenticated user
   const router = useRouter();
   const [linkData, setLinkData] = useState<LinkData[]>([]);
-  const [userData, setUserData] = useState<UserData>(placeholderUser);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loadingLinks, setLoadingLinks] = useState<boolean>(true);
   const [filterOptions, setFilterOptions] = useState<{
     tags: string[];
     mediaType: string[];
@@ -114,71 +60,115 @@ function ProfilePage() {
     }
   }, [isLoaded, user, id, router]);
 
-  // Fetch all link data on mount
+  // Fetch user profile data
   useEffect(() => {
-    const fetchData = async () => {
-      const allLinkData = await Promise.all(links.map(fetchLinkData));
-      setLinkData(allLinkData);
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`/api/profile/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const data = await response.json();
+        setUserData({
+          userID: data.id,
+          username: data.username,
+          avatarUrl: data.avatar || "/default-avatar.png",
+          bio: data.bio || "No bio available",
+          socials: data.socials || [],
+          collections: data.collections || [],
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     };
-    fetchData();
-  }, []);
+
+    if (id) {
+      fetchUserData();
+    }
+  }, [id]);
+
+  // Fetch link data for the user
+  useEffect(() => {
+    const fetchLinkData = async () => {
+      try {
+        const response = await fetch(`/api/link/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch link data');
+        }
+        const data = await response.json();
+        setLinkData(data);
+      } catch (error) {
+        console.error("Error fetching link data:", error);
+      } finally {
+        setLoadingLinks(false); // Stop loading once data is fetched
+      }
+    };
+
+    if (id) {
+      fetchLinkData();
+    }
+  }, [id]);
 
   // Apply filtering logic based on filterOptions
   const filteredLinks = linkData.filter((link) => {
+    // Collection filtering
     const matchesCollection =
-      filterOptions.collection.length === 0 ||
-      filterOptions.collection.includes(link.collection) ||
-      filterOptions.collection == ("All");
+      filterOptions.collection === "All" || // Show all if "All" is selected
+      filterOptions.collection.length === 0 || // Show all if no collection is selected
+      (link.collection === filterOptions.collection && link.collection !== null && link.collection !== ""); // Exact match for collection and it's not null/empty
 
+    // Tags filtering (ensure at least one tag matches if tags are selected)
     const matchesTags =
-      filterOptions.tags.length === 0 ||
-      filterOptions.tags.some((tag) => link.tags.includes(tag));
+      filterOptions.tags.length === 0 || // Show all if no tags are selected
+      filterOptions.tags.every((selectedTag) =>
+        link.tags.includes(selectedTag)
+      ); // Ensure each selected tag is in the link's tags
 
+    // Media type filtering
     const matchesMediaType =
-      filterOptions.mediaType.length === 0 ||
-      filterOptions.mediaType.includes(link.mediaType);
+      filterOptions.mediaType.length === 0 || // Show all if no media type is selected
+      filterOptions.mediaType.includes(link.mediaType); // Check for a match with the selected media types
 
     return matchesCollection && matchesTags && matchesMediaType;
   });
 
-  if (isLoaded && isSignedIn) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        {/* Profile Section */}
-        <div id="profile-section" className="bg-black p-4">
-          <ProfileDisplay userID={id || ''} displayType="display" />
-        </div>
+  if (!isLoaded || !userData) {
+    return <div>Loading user data...</div>;
+  }
 
-        {/* Main Content Section */}
-        <div className="flex w-full h-full">
-          <div className="w-3/4 w-full p-4 overflow-auto">
-            {/* Filter Buttons */}
-            <div className="flex justify-between mb-3">
-              <div className="mb-2 text-lg flex justify-evenly">
-                <SquigglyUnderline collections={placeholderUser.collections} filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
-              </div>
+  return (
+    <div className="min-h-screen flex flex-col w-full">
+      {/* Profile Section */}
+      <div id="profile-section" className="bg-black p-4">
+        <ProfileDisplay userID={id || ''} displayType="display" />
+      </div>
 
-              {/* Hide the "Create Collection" button when viewing another user's profile */}
-              {user.id === id ? (
-                <div className="float-right">
-                  <CreateCollectionModal />
-                </div>
-              ) : null}
+      {/* Main Content Section */}
+      <div className="w-[90%] mx-auto h-full">
+        <div className="w-80% mx-auto p-4 overflow-auto">
+          {/* Filter Buttons */}
+          <div className="flex justify-between mb-3">
+            <div className="mb-2 text-lg flex items-center justify-between items-stretch space-x-3">
+              <SquigglyUnderline collections={userData.collections} filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
             </div>
+          </div>
 
-            {/* Filtered Links */}
+          {/* Filtered Links */}
+          {loadingLinks ? (
+            <div>Loading links...</div>
+          ) : filteredLinks.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredLinks.map((link) => (
                 <LinkDisplay key={link.linkID} linkData={link} />
               ))}
             </div>
-          </div>
+          ) : (
+            <div>No links found for this user.</div>
+          )}
         </div>
       </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 }
 
 export default ProfilePage;
