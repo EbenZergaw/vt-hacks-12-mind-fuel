@@ -44,7 +44,25 @@ const fetchUserData = async (userID: string): Promise<UserData> => {
   const data = await response.json();
   
   // Ensure socials are parsed correctly
-  data.socials = Array.isArray(data.socials) ? data.socials : [];
+  data.socials = 
+  [
+    {
+      name: "Twitter",
+      url: "https://twitter.com/user",
+      icon: Twitter
+    },
+    {
+      name: "GitHub",
+      url: "https://github.com/user",
+      icon: Github
+    },
+    {
+      name: "Website",
+      url: "https://user.com",
+      icon: Globe
+    }
+  ]
+  
 
   return data;
 };
@@ -88,13 +106,17 @@ function ProfileDisplay({ userID, displayType }: ProfileDisplayProps) {
           <AvatarFallback>{userData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <div className="flex justify-between items-center mb-2">
-            <h1 className="text-2xl font-bold text-white">{userData.username}</h1>
+          <div className=" mb-2">
+            
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold text-white">{userData.username}</h1>
+              <EditProfileModal />
+            </div>
 
             {(userID === user?.id && displayType === "dashboard") && (
-              <div className="flex flex-col space-y-4">
-                <EditProfileModal />
-                <div className="text-white float-right text-right">
+              <div className="flex flex-col">
+                
+                <div className="text-white float-right text-right mt-3">
                   <SignOutButton />
                 </div>
               </div>

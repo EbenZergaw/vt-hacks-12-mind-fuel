@@ -12,6 +12,7 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useUser } from '@clerk/nextjs'; // Use Clerk's hook for user authentication
+import { CirclePlus } from 'lucide-react';
 
 function CreateCollectionModal() {
   const { user } = useUser(); // Get the current user
@@ -88,7 +89,7 @@ function CreateCollectionModal() {
       if (!open) resetModal();
     }}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setIsOpen(true)}>Create New Collection</Button>
+        <CirclePlus className='text-gray-600 hover:text-white cursor-pointer' onClick={() => setIsOpen(true)} />
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px] bg-black border-gray-500">

@@ -147,20 +147,25 @@ function Dashboard() {
           {/* Curated Content Cards */}
           <div className="w-80% mx-auto p-4 overflow-auto">
             {/* Filter Buttons */}
-            <div className="flex justify-between mb-3">
+            <div className="flex items-center justify-between mb-3">
+            
               <div className="mb-2 text-lg flex items-stretch">
                 {
                   <SquigglyUnderline collections={userData.collections} filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
                 }
+                <div className="ml-16">
+                  <CreateCollectionModal />
+                </div>
               </div>
-              <div className="float-right">
-                <CreateCollectionModal />
+
+              <div>
+                <PostLinkModal></PostLinkModal>
               </div>
             </div>
             
 
             {/* Filtered Links */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredLinks.map((link) => {
                 return <LinkDisplay key={link.linkID} linkData={link} />;
               })} 

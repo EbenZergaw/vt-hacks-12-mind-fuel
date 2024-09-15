@@ -15,6 +15,7 @@ import { Compare } from "../components/ui/compare";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";
 import Image from "next/image";
 import brainrot from './assets/brainrot.png'
+import mindfuel from './assets/mindfuel.png'
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -69,7 +70,7 @@ function page() {
         }
       >
         <Compare
-            firstImage="https://assets.aceternity.com/code-solution.png"
+            firstImage={mindfuel.src}
             secondImage={brainrot.src}
             firstImageClassName="object-cover object-left-top"
             secondImageClassname="object-cover object-left-top"
@@ -128,13 +129,11 @@ function page() {
             <Brain className="mx-auto w-6 h-6 text-white mb-4 float-right"></Brain>
 
             <h1 className="font-bold text-xl text-white mb-4 relative z-50 w-fit mx-auto">
-              Learn from the smartest
+              Learn From Your Friends
             </h1>
 
             <p className="font-normal text-base text-slate-500 mb-4 relative z-50">
-              Explore the knowledge of the smartest people in the world. Get
-              access to the best ideas and insights that experts are looking
-              into.
+              Explore the knowledge of those around you. Get access to the best ideas and insights that others are looking into.
             </p>
           </div>
         </div>

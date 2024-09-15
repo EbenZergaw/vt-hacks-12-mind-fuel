@@ -14,19 +14,13 @@ export default function Navbar() {
     <nav className="flex items-center justify-between p-4 bg-background border-b border-gray-700">
       <div className="mx-auto w-[80%] flex items-center justify-between">
         {/* LOGO */}
-        <Link href="/profile" className="w-10 h-10 rounded-full flex items-center justify-center text-white">
-          People
+        <Link href="/" className="w-10 h-10 rounded-full flex items-center justify-center text-white">
+          Home
         </Link>
 
-        {userId ? (
-          <PostLinkModal />
-        ) : (
-          <Link href="/sign-up">
-            <MovingBorderButton className="bg-gradient-to-t from-violet-600 to-indigo-600 hover:bg-[#0F021D] fade">
-              Post Something
-            </MovingBorderButton>
-          </Link>
-        )}
+        <Link href="/">
+          <h1 className="text-2xl bg-gradient-to-br from-violet-600 to-blue-500 text-transparent bg-clip-text">Mind Fuel</h1>
+        </Link>
 
         <div>
           {userId ? (
